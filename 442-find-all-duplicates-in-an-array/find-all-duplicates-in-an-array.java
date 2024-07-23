@@ -5,13 +5,8 @@ class Solution {
         if(n==0 || n==1) return li;
         for(int i=0;i<nums.length;i++){
             int ele= Math.abs(nums[i]);
-            int seat=ele-1;
-            if(nums[seat]<0){
-                li.add(ele);
-            }
-            else{
-                nums[seat]=-nums[seat];
-            }
+            if(nums[ele-1]<0) li.add(ele);
+            else nums[ele-1]=-nums[ele-1];  // making the number negative to maintain log
         }
         return li;
         
