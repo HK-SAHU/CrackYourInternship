@@ -1,52 +1,38 @@
 class Solution {
-        public static String minWindow(String s, String p) {
-            if (s == null || p == null || s.length() < p.length()) {
-                return "";
-            }
-
-            // Frequency map for characters in p
-            Map<Character, Integer> mapP = new HashMap<>();
-            for (char c : p.toCharArray()) {
-                mapP.put(c, mapP.getOrDefault(c, 0) + 1);
-            }
-
-            // Frequency map for characters in the current window
-            Map<Character, Integer> mapS = new HashMap<>();
-            int left = 0, right = 0;
-            int minLength = Integer.MAX_VALUE;
-            int start = 0;
-            int matchCount = 0;
-
-            while (right < s.length()) {
-                char charRight = s.charAt(right);
-
-                if (mapP.containsKey(charRight)) {
-                    mapS.put(charRight, mapS.getOrDefault(charRight, 0) + 1);
-                    if (mapS.get(charRight).intValue() == mapP.get(charRight).intValue()) {
-                        matchCount++;
-                    }
-                }
-
-                // When all characters are matched, try to shrink the window
-                while (matchCount == mapP.size()) {
-                    if (right - left + 1 < minLength) {
-                        minLength = right - left + 1;
-                        start = left;
-                    }
-
-                    char charLeft = s.charAt(left);
-                    if (mapP.containsKey(charLeft)) {
-                        mapS.put(charLeft, mapS.get(charLeft) - 1);
-                        if (mapS.get(charLeft).intValue() < mapP.get(charLeft).intValue()) {
-                            matchCount--;
-                        }
-                    }
-                    left++;
-                }
-
-                right++;
-            }
-
-            return minLength == Integer.MAX_VALUE ? "" : s.substring(start, start + minLength);
+    public static String minWindow(String s, String t) {
+        if (s == null || t == null || s.length() < t.length()) {
+            return "";
         }
+        int cnt = 0;
+        HashMap<Character , Integer> map = new HashMap<>();
+        int l = 0 ;
+        int n= s.length(); 
+        int m = t.length();
+        int minLength = Integer.MAX_VALUE;
+        int startInd =-1;
+        for(int i = 0 ; i<t.length(); i++){
+            map.put(t.charAt(i) , map.getOrDefault(t.charAt(i) ,0)+1);
+        }
+
+        for(int r = 0 ;r<n; r++){
+            if(map.getOrDefault(s.charAt(r) ,0)>0){
+                cnt++;
+            }
+            map.put(s.charAt(r) , map.getOrDefault(s.charAt(r),0)-1);
+            while(cnt==m){
+                if(r-l+1<minLength){
+                    minLength = r-l+1;
+                    startInd = l;
+                }
+                map.put(s.charAt(l) , map.get(s.charAt(l))+1);
+                if(map.get(s.charAt(l))>0){
+                    cnt--;
+                }
+                l++;
+            }
+        }
+
+        if(startInd==-1)return "";
+        return s.substring(startInd ,startInd+minLength );
+    }
 }
