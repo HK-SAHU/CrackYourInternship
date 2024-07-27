@@ -24,55 +24,42 @@ class Solution
 {
     //Function to find the smallest window in the string s consisting
     //of all the characters of string p.
-    public static String smallestWindow(String s, String p)
+    public static String smallestWindow(String s, String t)
     {
-        if (s == null || p == null || s.length() < p.length()) {
-            return "-1";
-        }
+        int n = s.length();
+        int m = t.length();
+        HashMap<Character, Integer> map = new HashMap<>();
 
-        // Frequency map for characters in p
-        Map<Character, Integer> mapP = new HashMap<>();
-        for (char c : p.toCharArray()) {
-            mapP.put(c, mapP.getOrDefault(c, 0) + 1);
-        }
+        int count = 0;
+        int start = -1;
+        int min = Integer.MAX_VALUE;
 
-        // Frequency map for characters in the current window
-        Map<Character, Integer> mapS = new HashMap<>();
-        int left = 0, right = 0;
-        int minLength = Integer.MAX_VALUE;
-        int start = 0;
-        int matchCount = 0;
+        int l=0;
+        int r=  0;
 
-        while (right < s.length()) {
-            char charRight = s.charAt(right);
+        for(int i=0; i<m; i++){
+            map.put(t.charAt(i), map.getOrDefault(t.charAt(i), 0)+1);
+        } 
 
-            if (mapP.containsKey(charRight)) {
-                mapS.put(charRight, mapS.getOrDefault(charRight, 0) + 1);
-                if (mapS.get(charRight).intValue() == mapP.get(charRight).intValue()) {
-                    matchCount++;
+        while(r<n){
+            if(map.getOrDefault(s.charAt(r), 0)>0) count++;
+            map.put(s.charAt(r), map.getOrDefault(s.charAt(r), 0)-1);
+            while(count==m){
+                if(r-l+1< min){
+                    min = r-l+1;
+                    start = l;
                 }
+
+                map.put(s.charAt(l), map.get(s.charAt(l))+1);
+                if(map.get(s.charAt(l))>0) count--;
+
+                l++;
             }
 
-            // When all characters are matched, try to shrink the window
-            while (matchCount == mapP.size()) {
-                if (right - left + 1 < minLength) {
-                    minLength = right - left + 1;
-                    start = left;
-                }
-
-                char charLeft = s.charAt(left);
-                if (mapP.containsKey(charLeft)) {
-                    mapS.put(charLeft, mapS.get(charLeft) - 1);
-                    if (mapS.get(charLeft).intValue() < mapP.get(charLeft).intValue()) {
-                        matchCount--;
-                    }
-                }
-                left++;
-            }
-
-            right++;
+            r++;
         }
 
-        return minLength == Integer.MAX_VALUE ? "-1" : s.substring(start, start + minLength);
+        if(start==-1) return "-1";
+        return s.substring(start, start+min);
     }
 }
