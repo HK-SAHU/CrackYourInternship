@@ -65,17 +65,71 @@ class Solution {
     }
     
     
-    public int maxArea(int M[][], int n, int m) {
-        if(n==0) return 0;
-        int[] heights= new int[m];
-        int maxArea=0;
+    public int maxArea(int M[][], int m, int n) {
+        // if(n==0) return 0;
+        // int[] heights= new int[m];
+        // int maxArea=0;
         
-        for(int row[]: M){
-            for(int j=0;j<m;j++){
+        // for(int row[]: M){
+        //     for(int j=0;j<m;j++){
                 
-                heights[j]=row[j]==1? heights[j]+1:0;
+        //         heights[j]=row[j]==1? heights[j]+1:0;
+        //     }
+        //     maxArea=Math.max(maxArea, largestRectangleArea(heights));
+        // }
+        
+        // return maxArea;
+        
+        
+        if (M == null || M.length == 0) {
+            return 0;
+        }
+        
+        // int m = M.length;
+        // int n = M[0].length;
+        int[] left = new int[n];   // Array to store the left boundary of consecutive 1's
+        int[] right = new int[n];  // Array to store the right boundary of consecutive 1's
+        int[] height = new int[n]; // Array to store the height of consecutive 1's
+        
+        Arrays.fill(right, n);
+        int maxArea = 0;
+        
+        for (int[] row : M) {
+            int curLeft = 0, curRight = n;
+            
+            // Update height array
+            for (int j = 0; j < n; j++) {
+                if (row[j] == 1) {
+                    height[j]++;
+                } else {
+                    height[j] = 0;
+                }
             }
-            maxArea=Math.max(maxArea, largestRectangleArea(heights));
+            
+            // Update left boundary array
+            for (int j = 0; j < n; j++) {
+                if (row[j] == 1) {
+                    left[j] = Math.max(left[j], curLeft);
+                } else {
+                    left[j] = 0;
+                    curLeft = j + 1;
+                }
+            }
+            
+            // Update right boundary array
+            for (int j = n - 1; j >= 0; j--) {
+                if (row[j] == 1) {
+                    right[j] = Math.min(right[j], curRight);
+                } else {
+                    right[j] = n;
+                    curRight = j;
+                }
+            }
+            
+            // Calculate maximum area for each cell
+            for (int j = 0; j < n; j++) {
+                maxArea = Math.max(maxArea, (right[j] - left[j]) * height[j]);
+            }
         }
         
         return maxArea;
