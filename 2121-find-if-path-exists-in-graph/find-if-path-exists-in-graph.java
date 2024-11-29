@@ -27,6 +27,7 @@ class Solution {
         
         while(!q.isEmpty()){
             int front= q.poll();
+            if(front==end) return;
             for(int ele : adj.get(front)){
                 if(!vis[ele]){
                     q.add(ele);
