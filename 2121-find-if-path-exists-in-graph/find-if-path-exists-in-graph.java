@@ -14,13 +14,13 @@ class Solution {
             adj.get(b).add(a);
         }
         
-        bfs(source, vis, adj);
+        bfs(source, vis, adj, destination);
         return vis[destination];
         
         
     }
     
-    public void bfs(int source, boolean[] vis, List<List<Integer>> adj){
+    public void bfs(int source, boolean[] vis, List<List<Integer>> adj, int end){
         Queue<Integer> q= new LinkedList<>();
         q.add(source);
         vis[source]=true;
@@ -31,6 +31,7 @@ class Solution {
                 if(!vis[ele]){
                     q.add(ele);
                     vis[ele]= true;
+                    if(ele==end) return;
                 }
             }
         }
