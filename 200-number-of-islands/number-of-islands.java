@@ -1,41 +1,47 @@
 class Solution {
     public int numIslands(char[][] grid) {
-        if (grid == null || grid.length == 0) {
-            return 0;
-        }
-
-        int numIslands = 0;
-        int rows = grid.length;
-        int cols = grid[0].length;
-
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                if (grid[i][j] == '1') {
-                    numIslands += 1; // Start of a new island
-                    dfs(grid, i, j);
+        if(grid==null || grid.length==0) return 0;
+        int m= grid.length;
+        int n= grid[0].length;
+        boolean[][] vis= new boolean[m][n];
+        int count=0;
+        
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if(grid[i][j]=='1' && !vis[i][j]){
+                    bfs(grid,vis, i, j);
+                    count++;
                 }
             }
         }
-
-        return numIslands;
+        return count;
+        
     }
     
-    private void dfs(char[][] grid, int i, int j) {
-        int rows = grid.length;
-        int cols = grid[0].length;
-
-        // Check boundary conditions
-        if (i < 0 || i >= rows || j < 0 || j >= cols || grid[i][j] == '0') {
-            return;
+    public void bfs(char[][] grid, boolean[][] vis, int row, int col){
+        int m= grid.length;
+        int n= grid[0].length;
+        int[][] directions= {{1,0},{-1,0},{0,1},{0,-1}};
+        Queue<int[]> q= new LinkedList<>();
+        q.add(new int[] {row, col});
+        vis[row][col]= true;
+        
+        while(!q.isEmpty()){
+            int[] front = q.poll();
+            int currRow= front[0];
+            int currCol= front[1];
+            
+            for(int[] dir : directions){
+                int newRow= currRow + dir[0];
+                int newCol= currCol + dir[1];
+                
+                if(newRow >=0 && newCol >=0 && newRow<m && newCol<n && grid[newRow][newCol]=='1' && !vis[newRow][newCol]){
+                    q.add(new int[] {newRow, newCol});
+                    vis[newRow][newCol]=true;
+                }
+                
+            }
         }
-
-        // Mark the cell as visited by setting it to '0'
-        grid[i][j] = '0';
-
-        // Perform DFS in all four possible directions
-        dfs(grid, i - 1, j); // up
-        dfs(grid, i + 1, j); // down
-        dfs(grid, i, j - 1); // left
-        dfs(grid, i, j + 1); // right
+        
     }
 }
